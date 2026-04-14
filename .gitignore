@@ -1,0 +1,17 @@
+# IDE cá nhân (VS Code)
+.vscode/
+
+# Thư mục build và các file thực thi
+build/
+bin/
+obj/
+
+# Các file thực thi được tạo ra (Windows/Linux/Mac)
+*.exe
+*.out
+*.app
+
+# Các file tạm và debug
+*.log
+*.o
+*.obj
