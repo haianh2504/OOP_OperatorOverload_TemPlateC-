@@ -4,8 +4,10 @@
 // Lớp: IT002.Q25
 // BTTuan5
 #include <iostream>
+#include <limits>
 #include <string>
 #include <vector>
+#include <windows.h>
 using namespace std;
 
 // 1.Công ty du lịch X có nhu cầu quản lý thông tin các chuyến xe. 
@@ -153,7 +155,8 @@ class NOITHANH : public CHUYENXE
 
         // input
         cout << "Mã số chuyến: "; cin >> ms;
-        cout << "Tên tài xế: "; getline(cin, tx); cin.ignore();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cout << "Tên tài xế: "; getline(cin, tx);
         cout << "Biển số xe: "; cin >> sx;
         cout << "Số tuyến: "; cin >> st;
         cout << "Số kilomet đi được: "; cin >> km;
@@ -246,9 +249,11 @@ class NGOAITHANH : public CHUYENXE
 
         // input
         cout << "Mã số chuyến: "; cin >> ms;
-        cout << "Tên tài xế: "; getline(cin, tx); cin.ignore();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cout << "Tên tài xế: "; getline(cin, tx);
         cout << "Biển số xe: "; cin >> sx;
-        cout << "Nơi đến: "; getline(cin, nd); cin.ignore();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cout << "Nơi đến: "; getline(cin, nd);
         cout << "Số ngày đi được: "; cin >> sn;
 
         // kiểm tra và gán
@@ -275,7 +280,7 @@ class NGOAITHANH : public CHUYENXE
 long long tongDoanhThuNoiThanh(const vector<CHUYENXE*> &NoiThanh)
 {
     long long tongDoanhThu = 0;
-    for(int i = 0; i < NoiThanh.size(); i++)
+    for(size_t i = 0; i < NoiThanh.size(); i++)
     {
         tongDoanhThu += NoiThanh[i]->getDoanhThu();
     };
@@ -286,7 +291,7 @@ long long tongDoanhThuNoiThanh(const vector<CHUYENXE*> &NoiThanh)
 long long tongDoanhThuNgoaiThanh(const vector<CHUYENXE*> &NgoaiThanh)
 {
     long long tongDoanhThu = 0;
-    for(int i = 0; i < NgoaiThanh.size(); i++)
+    for(size_t i = 0; i < NgoaiThanh.size(); i++)
     {
         tongDoanhThu += NgoaiThanh[i]->getDoanhThu();
     };
@@ -299,16 +304,26 @@ long long tongDoanhThu(const vector<CHUYENXE*> &NoiThanh, const vector<CHUYENXE*
     return tongDoanhThuNoiThanh(NoiThanh) + tongDoanhThuNgoaiThanh(NgoaiThanh);
 }
 
+// Khởi tạo giá trị cho các biến static
+int NOITHANH::donGiaMoiKm = 0;
+int NGOAITHANH::donGiaMotNgay = 0;
+
 int main()
 {
+    // Hiển thị tiếng việt ở console
+    SetConsoleOutputCP(CP_UTF8);
+    SetConsoleCP(CP_UTF8);
+
+    NOITHANH::setDonGiaMotKm(10000);
+    NGOAITHANH::setDonGiaMotNgay(500000);
+
     vector<CHUYENXE*> NoiThanh;
     vector<CHUYENXE*> NgoaiThanh;
 
     int xeNoiThanh = 0;
     int xeNgoaiThanh = 0;
 
-    if(cin >> xeNoiThanh && xeNoiThanh > 0 && cin >> xeNgoaiThanh && xeNgoaiThanh > 0)
-    {
+    if(cin >> xeNoiThanh && xeNoiThanh > 0){
         // Nhập nội thành
         for(int i = 0; i < xeNoiThanh; i++)
         {
@@ -317,6 +332,9 @@ int main()
             noiThanh->nhapThongTin();
             NoiThanh.push_back(noiThanh);
         }
+    }
+    
+    if(cin >> xeNgoaiThanh && xeNgoaiThanh > 0){
         // Nhập ngoại thành
         for(int i = 0; i < xeNgoaiThanh; i++)
         {
@@ -328,11 +346,11 @@ int main()
     };
     
     // tính doanh thu cho từng chuyến xe
-    for(int i = 0; i < NoiThanh.size(); i++)
+    for(size_t i = 0; i < NoiThanh.size(); i++)
     {
         NoiThanh[i]->tinhDoanhThu();
     };
-    for(int i = 0; i < NgoaiThanh.size(); i++)
+    for(size_t i = 0; i < NgoaiThanh.size(); i++)
     {
         NgoaiThanh[i]->tinhDoanhThu();
     }
@@ -342,12 +360,12 @@ int main()
     cout << "Tổng doanh thu của chuyến ngoại thành: " << tongDoanhThuNgoaiThanh(NgoaiThanh) << "vnd" << endl;
 
     // nhớ delete
-    for(int i = 0; i < NoiThanh.size(); i++)
+    for(size_t i = 0; i < NoiThanh.size(); i++)
     {
         delete NoiThanh[i];
     };
     NoiThanh.clear();
-    for(int i = 0; i < NgoaiThanh.size(); i++)
+    for(size_t i = 0; i < NgoaiThanh.size(); i++)
     {
         delete NgoaiThanh[i];
     };
