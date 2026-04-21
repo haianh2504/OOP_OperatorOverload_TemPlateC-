@@ -155,7 +155,6 @@ class SACH
         cout << "Số lượng(1 - 300): "; in >> sl;
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
         cout << "Nhà xuất bản: "; getline(in, nxb);
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
         setMaSach(ms);
         setDonGia(dg);
@@ -363,10 +362,12 @@ class GIAOKHOA : public SACH
     }
 };
 
+
+// SÁCH THAM KHẢO
 class THAMKHAO : public SACH
 {
     private:
-    static int phanTramThue;
+    int phanTramThue;
     long long thanhTien;
 
     public:
@@ -375,7 +376,7 @@ class THAMKHAO : public SACH
         setPhanTramThue(pt);
     };
 
-    static void setPhanTramThue(int pt)
+    void setPhanTramThue(int pt)
     {
         if(pt < 0 || pt > 100)
         {
@@ -383,7 +384,7 @@ class THAMKHAO : public SACH
         }
         phanTramThue = pt;
     }
-    static int getPhanTramThue()
+    int getPhanTramThue()
     {
         return phanTramThue;
     }
@@ -391,7 +392,8 @@ class THAMKHAO : public SACH
     // Tính thành tiền
     void tinhThanhTien() override
     {
-        thanhTien = getSoLuong()*getDonGia() + (getSoLuong()*getDonGia()*phanTramThue)/100;
+        long long tongTien = static_cast<long long>(getSoLuong()) * getDonGia();
+        thanhTien = tongTien + (tongTien * phanTramThue) / 100;
     }
 
     // Thành tiền
@@ -454,7 +456,6 @@ class THAMKHAO : public SACH
     }
 };
 
-int THAMKHAO::phanTramThue = 3;
 
 int main()
 {
@@ -504,6 +505,8 @@ int main()
     // Xuất ra các sách giáo khoa của nhà xuất bản K (cho nhập K)
     // đi qua vector sách giáo khoa - getNhaSachBan nào 
     string NXB;
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    cout << "Nhập tên nhà xuất bản cần tìm: ";
     getline(cin, NXB);
     cout << "Các loại sách giáo khoa của NXB " << NXB << " là: ";
     for(size_t i = 0; i < dsGiaoKhoa.size(); i++)
