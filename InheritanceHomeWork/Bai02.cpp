@@ -10,6 +10,7 @@
 #include <algorithm>
 #include <string>
 #include <limits>
+#include <windows.h>
 using namespace std;
 
 // Kiểm tra tính hợp lệ vùng
@@ -25,8 +26,8 @@ bool isValid(T value, T start, T end)
     return false;
 }
 
-// composition DATE
-class DATE
+// composition Date
+class Date
 {
     private:
     int ngay;
@@ -36,7 +37,7 @@ class DATE
 
     public:
     // constructor
-    DATE(int day = 1, int month = 1, int year = 1970) : ngay(day), thang(month), nam(year){
+    Date(int day = 1, int month = 1, int year = 1970) : ngay(day), thang(month), nam(year){
         // logic kiểm tra
         dateValid(day, month, year);
     }; 
@@ -91,38 +92,17 @@ class DATE
         }
     }
     // Năm nhuận
-    static bool namNhuan(int year)
+    bool namNhuan(int year)
     {
     return (year % 400 == 0 || (year % 4 == 0 && year % 100 != 0)) ? true : false;  
     };
-    // Ngày tối đa
-    static int ngayToiDa(int month)
-    {
-    if(month <= 0 || month > 12)
-    {
-        throw invalid_argument("Lỗi: Tháng không hợp lệ.");
-    };
-
-    if(month == 2){
-        return (namNhuan) ? 29 : 28;
-    }
-    else if(month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 10 || month == 12)
-    {
-        return 31;
-    }
-    else
-    {
-        return 30;
-    }
-    }
-    
     // display - truyền thống
     void dateDisplay()
     {
         cout << "Ngày " << ngay << " tháng " << thang << " năm " << nam << endl;
     }
     // display - overload
-    friend ostream& operator<<(ostream& out, const DATE &D)
+    friend ostream& operator<<(ostream& out, const Date &D)
     {
         out << "Ngày " << D.ngay << " tháng " << D.thang << " năm " << D.nam << endl;
         
@@ -130,7 +110,7 @@ class DATE
     }
 
     // Nhập thông tin - overload
-    friend istream& operator>>(istream& in, DATE &D)
+    friend istream& operator>>(istream& in, Date &D)
     {
         int day, month, year;
         cout << "Ngày: "; in >> day;
@@ -150,7 +130,7 @@ class SACH
 {
     private:
     string maSach;
-    DATE ngayNhap;
+    Date ngayNhap;
     long donGia;
     int soLuong;
     string nhaXuatBan;
@@ -225,7 +205,7 @@ class SACH
     {
         ngayNhap.dateValid(day,month,year);
     };
-    DATE getNgayNhap()
+    Date getNgayNhap()
     {
         return ngayNhap;
     };
@@ -277,10 +257,8 @@ class SACH
     // destructor
     virtual ~SACH(){};
 };
-// định nghĩa destructor
-SACH::~SACH(){};
 // Khai báo biến static
-int DATE::currentYear = 2026;
+int Date::currentYear = 2026;
 
 
 
@@ -294,24 +272,17 @@ class GIAOKHOA : public SACH
     public:
     // constructor
     GIAOKHOA(string tt = "Không xác định.") : SACH(), tinhTrang(tt), thanhTien(0){
-        setTinhTrang(tt);
         tinhThanhTien();
     };
 
     // tình trạng
     void setTinhTrang(string tt)
     {
-        for(char &c : tt)
-        {
-            c = toupper(c);
-        }
-
-        while(tt != "MỚI" && tt != "CŨ")
+        while(tt != "mới" && tt != "cũ" && tt != "MỚI" && tt != "CŨ")
         {
             cout << "Vui lòng nhập lại tình trạng ( chỉ được *mới* hay *cũ* ): ";
             cin >> tt;
-            setTinhTrang(tt);
-        };
+        }
 
         tinhTrang = tt;
     };
@@ -323,7 +294,7 @@ class GIAOKHOA : public SACH
     // Tính thành tiền
     void tinhThanhTien() override
     {
-        thanhTien = (tinhTrang == "MỚI") ? (getSoLuong()*getDonGia()) : (getSoLuong()*getDonGia()*50)/100;
+        thanhTien = (tinhTrang == "MỚI" || tinhTrang == "mới") ? (getSoLuong()*getDonGia()) : (getSoLuong()*getDonGia()*50)/100;
     }
 
     // Thành tiền
@@ -346,6 +317,7 @@ class GIAOKHOA : public SACH
         cout << "Ngày nhập (ngày tháng năm): "; cin >> day >> month >> year;
         cout << "Đơn giá: "; cin >> dg;
         cout << "Số lượng(1 - 300): "; cin >> sl;
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
         cout << "Tên nhà xuất bản: "; getline(cin, nxb);
         cout << "Tình trạng sách: "; getline(cin, tt);
 
@@ -394,16 +366,16 @@ class GIAOKHOA : public SACH
 class THAMKHAO : public SACH
 {
     private:
-    static float phanTramThue;
+    static int phanTramThue;
     long long thanhTien;
 
     public:
-    THAMKHAO(float pt = 0.0f) : SACH(), thanhTien(0)
+    THAMKHAO(int pt = 0) : SACH(), thanhTien(0)
     {
         setPhanTramThue(pt);
     };
 
-    static void setPhanTramThue(float pt)
+    static void setPhanTramThue(int pt)
     {
         if(pt < 0 || pt > 100)
         {
@@ -411,7 +383,7 @@ class THAMKHAO : public SACH
         }
         phanTramThue = pt;
     }
-    static float getPhanTramThue()
+    static int getPhanTramThue()
     {
         return phanTramThue;
     }
@@ -419,14 +391,12 @@ class THAMKHAO : public SACH
     // Tính thành tiền
     void tinhThanhTien() override
     {
-        // TODO: Cập nhật `thanhTien` dựa trên số lượng, đơn giá và phần trăm thuế.
-        thanhTien = 0;
+        thanhTien = getSoLuong()*getDonGia() + (getSoLuong()*getDonGia()*phanTramThue)/100;
     }
 
     // Thành tiền
     long long getThanhTien() override
     {
-        // TODO: Trả về giá trị `thanhTien` sau khi đã tính.
         return thanhTien;
     }
 
@@ -438,7 +408,7 @@ class THAMKHAO : public SACH
         long dg;
         int sl;
         string nxb;
-        float pt;
+        int pt;
 
         cout << "Mã sách: "; cin >> ms;
         cout << "Ngày nhập (ngày tháng năm): "; cin >> day >> month >> year;
@@ -460,7 +430,7 @@ class THAMKHAO : public SACH
     {
         SACH::cinOverload(in);
 
-        float pt;
+        int pt;
         cout << "Phần trăm thuế: "; in >> pt;
         setPhanTramThue(pt);
     }
@@ -484,4 +454,64 @@ class THAMKHAO : public SACH
     }
 };
 
-float THAMKHAO::phanTramThue = 0.0f;
+int THAMKHAO::phanTramThue = 3;
+
+int main()
+{
+    SetConsoleCP(65001);
+    SetConsoleOutputCP(65001);
+    vector<GIAOKHOA> dsGiaoKhoa(3);
+    vector<THAMKHAO> dsThamKhao(3);
+
+    cout << "=== Nhap thong tin 3 sach giao khoa ===" << endl;
+    for(size_t i = 0; i < 3; ++i)
+    {
+        cout << "\nSach giao khoa " << (i + 1) << ":" << endl;
+        dsGiaoKhoa[i].NhapThongTin();
+        dsGiaoKhoa[i].tinhThanhTien();
+    }
+
+    cout << "\n=== Nhap thong tin 3 sach tham khao ===" << endl;
+    for(size_t i = 0; i < 3; ++i)
+    {
+        cout << "\nSach tham khao " << (i + 1) << ":" << endl;
+        dsThamKhao[i].NhapThongTin();
+        dsThamKhao[i].tinhThanhTien();
+    }
+
+    long long tongThanhTienGiaoKhoa = 0;
+    for(size_t i = 0; i < 3; ++i)
+    {
+        tongThanhTienGiaoKhoa += dsGiaoKhoa[i].getThanhTien();
+    }
+
+    long long tongThanhTienThamKhao = 0;
+    long long tongDonGiaThamKhao = 0;
+    for(size_t i = 0; i < 3; ++i)
+    {
+        tongThanhTienThamKhao += dsThamKhao[i].getThanhTien();
+        tongDonGiaThamKhao += dsThamKhao[i].getDonGia();
+    }
+
+    long long trungBinhDonGiaThamKhao = (tongDonGiaThamKhao + 1) / 3;
+
+    cout << "\n=== Ket qua ===" << endl;
+    cout << "Tong thanh tien sach giao khoa: " << tongThanhTienGiaoKhoa << " vnd" << endl;
+    cout << "Tong thanh tien sach tham khao: " << tongThanhTienThamKhao << " vnd" << endl;
+    cout << "Trung binh cong don gia sach tham khao: " << trungBinhDonGiaThamKhao << " vnd" << endl;
+
+
+    // Xuất ra các sách giáo khoa của nhà xuất bản K (cho nhập K)
+    // đi qua vector sách giáo khoa - getNhaSachBan nào 
+    string NXB;
+    getline(cin, NXB);
+    cout << "Các loại sách giáo khoa của NXB " << NXB << " là: ";
+    for(size_t i = 0; i < dsGiaoKhoa.size(); i++)
+    {
+        if(dsGiaoKhoa[i].getNXB() == NXB)
+        {
+            cout << dsGiaoKhoa[i].getMaSach() << ", ";
+        }
+    };
+    return 0;
+}

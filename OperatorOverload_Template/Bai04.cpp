@@ -155,16 +155,16 @@ class CDate
     };
 
     // Hàm cộng 1 ngày ( hàm hỗ trợ logic )
-    friend void ExcessingDayIncrement(CDate &DATE)
+    friend void ExcessingDayIncrement(CDate &Date)
     {
         // xác định ngày tối đa
         int ngayToiDa;
-        if(DATE.month == 2)
+        if(Date.month == 2)
         {
-            bool namNhuan = (DATE.year % 400 == 0) || (DATE.year % 4 == 0 && DATE.year % 100 != 0);
+            bool namNhuan = (Date.year % 400 == 0) || (Date.year % 4 == 0 && Date.year % 100 != 0);
             ngayToiDa = (namNhuan) ? 29 : 28;
         }
-        else if(DATE.month == 1 || DATE.month == 3 || DATE.month == 5 || DATE.month == 7 || DATE.month == 10 || DATE.month == 12)
+        else if(Date.month == 1 || Date.month == 3 || Date.month == 5 || Date.month == 7 || Date.month == 10 || Date.month == 12)
         {
             ngayToiDa = 31;
         }
@@ -175,29 +175,29 @@ class CDate
 
 
         // Kiểm tra lại excession
-        if(DATE.day > ngayToiDa)
+        if(Date.day > ngayToiDa)
         {
-            DATE.day = 1;
-            DATE.month += 1;
+            Date.day = 1;
+            Date.month += 1;
         }
         
-        if(DATE.month > 12)
+        if(Date.month > 12)
         {
-            DATE.month = 1;
-            DATE.year += 1;
+            Date.month = 1;
+            Date.year += 1;
         }
     };
     // Hàm trừ 1 ngày ( hàm hỗ trợ logic )
-    friend void ExcessingDayDecrement(CDate &DATE)
+    friend void ExcessingDayDecrement(CDate &Date)
     {
         // xác định ngày tối đa
         int ngayToiDa;
-        if(DATE.month == 2)
+        if(Date.month == 2)
         {
-            bool namNhuan = (DATE.year % 400 == 0) || (DATE.year % 4 == 0 && DATE.year % 100 != 0);
+            bool namNhuan = (Date.year % 400 == 0) || (Date.year % 4 == 0 && Date.year % 100 != 0);
             ngayToiDa = (namNhuan) ? 29 : 28;
         }
-        else if(DATE.month == 1 || DATE.month == 3 || DATE.month == 5 || DATE.month == 7 || DATE.month == 10 || DATE.month == 12)
+        else if(Date.month == 1 || Date.month == 3 || Date.month == 5 || Date.month == 7 || Date.month == 10 || Date.month == 12)
         {
             ngayToiDa = 31;
         }
@@ -206,13 +206,13 @@ class CDate
             ngayToiDa = 30;
         };
 
-        if(DATE.day < 0)
+        if(Date.day < 0)
         {
-            DATE.day = ngayToiDa;
-            if(DATE.month == 1)
+            Date.day = ngayToiDa;
+            if(Date.month == 1)
             {
-                DATE.month = 12;
-                DATE.year -= 1;
+                Date.month = 12;
+                Date.year -= 1;
             };
         }
     }
@@ -248,20 +248,20 @@ class CDate
     };
 
     // HIỂN THỊ THÔNG TIN NGÀY - overload
-    friend ostream& operator<<(ostream& out, const CDate &DATE)
+    friend ostream& operator<<(ostream& out, const CDate &Date)
     {
-        if(DATE.month < 10)
+        if(Date.month < 10)
         {
-            out << DATE.day << "/0" << DATE.month << "/" << DATE.year << endl;
+            out << Date.day << "/0" << Date.month << "/" << Date.year << endl;
         }
         else
         {
-            out << DATE.day << "/" << DATE.month << "/" << DATE.year << endl;
+            out << Date.day << "/" << Date.month << "/" << Date.year << endl;
         }
         return out;
     }
     // NHẬP THÔNG TIN NGÀY - overload
-    friend istream& operator>>(istream& in, CDate &DATE)
+    friend istream& operator>>(istream& in, CDate &Date)
     {
         int d, m, y;
         while(true)
@@ -278,9 +278,9 @@ class CDate
                 else
                 {
                     if(DateHopLe(d,m,y)){
-                        DATE.day = d;
-                        DATE.month = m;
-                        DATE.year = y;
+                        Date.day = d;
+                        Date.month = m;
+                        Date.year = y;
                         break;
                     }
                     else{
@@ -325,20 +325,20 @@ class CDate
         }
     }
     // Hàm xác định số ngày từ thời điểm hiện tại về -> 01/01/0001
-    friend int DAYdistance(const CDate &DATE)
+    friend int DAYdistance(const CDate &Date)
     {
        int total = 0;
        // năm 1 -> năm cận end
-       for(int i = 1; i < DATE.year; i++)
+       for(int i = 1; i < Date.year; i++)
        {
         total += (laNamNhuan(i)) ? 366 : 365;
        }
        // cộng số ngày còn lại của năm end
-       for(int i = 1; i < DATE.month; i++)
+       for(int i = 1; i < Date.month; i++)
        {
-        total += ngayToiDa(i, DATE.year);
+        total += ngayToiDa(i, Date.year);
        }
-       total += DATE.day;
+       total += Date.day;
 
        return total;
     }
@@ -360,22 +360,22 @@ int main()
 {
     // testing code
    CDate sinhNhatToi(25,4,2007);
-   // test DATE++;
+   // test Date++;
    cout << "(postfix)++ :";
    cout << sinhNhatToi << " -> " << sinhNhatToi++ << " -> " << sinhNhatToi << endl;
 
    CDate sinhNhatBRO1(19,12,1992);
-   // test ++DATE;
+   // test ++Date;
    cout << "++(prefix) :";
    cout << sinhNhatBRO1 << " -> " << ++sinhNhatBRO1 << " -> " << sinhNhatBRO1 << endl;
 
    CDate sinhNhatBRO2(1,3,1991);
-   // test DATE--;
+   // test Date--;
    cout << "(postfix)-- :";
    cout << sinhNhatBRO2 << " -> " << sinhNhatBRO2-- << " -> " << sinhNhatBRO2 << endl;
 
     CDate sinhNhatBRO3(11,9,1991);
-   // test --DATE;
+   // test --Date;
    cout << "--(prefix) :";
    cout << sinhNhatBRO3 << " -> " << --sinhNhatBRO3 << " -> " << sinhNhatBRO3 << endl;
 
