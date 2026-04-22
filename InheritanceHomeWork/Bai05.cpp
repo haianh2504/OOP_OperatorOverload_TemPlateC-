@@ -126,14 +126,6 @@ class Date
     }
 };
 
-// Cột mốc cố định để dễ bảo trì code
-const long long MIN_LUONG = 5000000;
-const long long MAX_LUONG = 6000000;
-const int MIN_SANPHAM = 0;
-const int MAX_SANPHAM = 200;\
-const int MIN_DONGIA = 1000;
-const int MAX_DONGIA = 10000;
-
 // NHÂN VIÊN - ABSTRACT CLASS
 class NHANVIEN
 {
@@ -194,6 +186,12 @@ class SANXUAT : public NHANVIEN
     int soSanPham = 0;
     static long donGiaSanPham;
     long long tongLuong = -1;
+    static const long long MIN_LUONG = 5000000;
+    static const long long MAX_LUONG = 6000000;
+    static const int MIN_SANPHAM = 0;
+    static const int MAX_SANPHAM = 200;
+    static const int MIN_DONGIA = 1000;
+    static const int MAX_DONGIA = 10000;
 
     public:
     // constructor
@@ -325,6 +323,8 @@ class VANPHONG : public NHANVIEN
     int soNgayLamViec = 0;
     static int donGiaMotNgayLamViec;
     long long tongLuong = 0;
+    static const int MIN_LUONG_NGAY = 100000;
+    static const int MAX_LUONG_NGAY = 400000;
 
     public:
     // constructor
@@ -347,15 +347,15 @@ class VANPHONG : public NHANVIEN
         }
     }
     // Công đi làm 1 ngày ( chung )
-    static void setDonGiaSanPham(int newNumber)
+    static void setDonGiaMotNgayLamViec(int newNumber)
     {
-        if(100000 <= newNumber && newNumber <= 400000)
+        if(MIN_LUONG_NGAY <= newNumber && newNumber <= MAX_LUONG_NGAY)
         {
             donGiaMotNgayLamViec = newNumber;
         }
         else
         {
-            cout << "Lỗi: Cập nhật lương 1 ngày làm việc không thành công.( chỉ từ 100000 -> 400000/ ngày)" << endl;
+            cout << "Lỗi: Cập nhật lương 1 ngày làm việc không thành công.( chỉ từ " << MIN_LUONG_NGAY << " -> " << MAX_LUONG_NGAY << "/ ngày)" << endl;
         }
     };
     // Số ngày làm việc
@@ -503,7 +503,7 @@ int main()
     SanXuat.clear();
     for(size_t i = 0; i < vpSize; i++)
     {
-        delete SanXuat[i];
+        delete VanPhong[i];
     };
     VanPhong.clear();
 
