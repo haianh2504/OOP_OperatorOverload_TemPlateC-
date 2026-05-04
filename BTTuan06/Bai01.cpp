@@ -515,4 +515,17 @@ int main()
     }
     cout << "\nNhân viên văn phòng cao tuổi nhất:" << endl;
     nvCaoTuoiNhat->xuatThongTin();
+    // giải phóng bộ nhớ
+    for(int i = 0; i < soNhanVienVanPhong; i++)
+    {
+        delete danhSachNhanVienVanPhong[i];
+    }
+    danhSachNhanVienVanPhong.clear();
+    for(int i = 0; i < soNhanVienSanXuat; i++)
+    {
+        delete danhSachNhanVienSanXuat[i];
+    }
+    danhSachNhanVienSanXuat.clear();
+
+    return 0;
 }
